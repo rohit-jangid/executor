@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Executor</string>
+    <string name="press_for_hello_world">Press For Hello World</string>
 </resources>
