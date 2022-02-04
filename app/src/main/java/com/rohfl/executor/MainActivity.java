@@ -8,18 +8,19 @@ import android.widget.Toast;
 
 
 import com.rohfl.executor.interfaces.FetchHelloWorld;
+import com.rohfl.executor.interfaces.PresenterView;
 
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements PresenterView.View {
 
     Button button;
 
     @Inject
-    FetchHelloWorld fetchHelloWorld;
+    PresenterView.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,11 +29,22 @@ public class MainActivity extends AppCompatActivity{
 
         button = findViewById(R.id.button);
 
+        presenter.takeView(this);
+
         button.setOnClickListener(v -> {
-            fetchHelloWorld.fetchHelloWorld(() -> {
-                Toast.makeText(this, "Hello World", Toast.LENGTH_SHORT).show();
-            });
+            presenter.fetchHelloWorld();
         });
 
+    }
+
+    @Override
+    public void showToast(String s) {
+        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        presenter.dropView();
+        super.onDestroy();
     }
 }
